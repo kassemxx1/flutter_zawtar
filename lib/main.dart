@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'Item_class.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'detailScreen.dart';
 final _firestore = Firestore.instance;
+String titlee;
+String imagenamee;
+String detailss;
+List<MessageBubble> messageBubbles = [];
 void main() {
   return runApp(MaterialApp(
     home: zawtar(),
@@ -60,13 +65,13 @@ class MessagesStream extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           final messages = snapshot.data.documents;
-          List<MessageBubble> messageBubbles = [];
+
           for (var message in messages) {
             final messageText = message.data['title'];
             final messageSender = message.data['details'];
             final messageTime = message.data['imagename'];
             final messageBubble =
-            MessageBubble(messageSender, messageText,messageTime);
+            MessageBubble(messageText, messageSender,messageTime);
 
             messageBubbles.insert(messageBubbles.length, messageBubble);
 
@@ -74,10 +79,13 @@ class MessagesStream extends StatelessWidget {
           return Expanded(
             child: ListView(
 
+
               reverse: true,
               padding: EdgeInsets.symmetric(
                   horizontal: 10.0, vertical: 20.0),
               children: messageBubbles,
+
+
             ),
           );
         }
@@ -96,30 +104,51 @@ class MessageBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Container(
-        height: 100.0,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: <Widget>[
-              Container(
-                height: 98.0,
-                  width: 150.0,
-                  child: Image.network(imagename,fit: BoxFit.fill,)),
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 0.0,horizontal: 0.0),
-                child:Text(title,
-                  style: TextStyle(
-                    fontSize: 5.0,
+      padding: const EdgeInsets.all(2.0),
+      child: MaterialButton(
+        onPressed: (){
+         var detialll = Navigator.push(context,
+           MaterialPageRoute(builder: (context){
+             return detailscreen();
+           })
+          );
+          titlee=title;
+          imagenamee=imagename;
+          detailss=details;
+          
+
+        },
+        child: Container(
+          height: 100.0,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: <Widget>[
+                Container(
+                  height: 98.0,
+                    width: 100.0,
+                    child: Image.network(imagename,fit: BoxFit.fill,)),
+                Expanded(
+                  child: Text(title,
+                    maxLines: 3,
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+
+
+
+
+                    ),
+
+
 
                   ),
-
-                )
-              ),
+                ),
 
 
-            ],
+              ],
+            ),
           ),
         ),
       ),
