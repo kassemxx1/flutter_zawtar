@@ -7,6 +7,8 @@ String titlee;
 String imagenamee;
 String detailss;
 List<MessageBubble> messageBubbles = [];
+List<String> picsList;
+List<String> nnnn=['1.png'];
 void main() {
   return runApp(MaterialApp(
     home: zawtar(),
@@ -58,8 +60,10 @@ class _zawtarState extends State<zawtar> {
   }
 }
 class MessagesStream extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
+    messageBubbles.clear();
     return StreamBuilder<QuerySnapshot>(
       stream: _firestore.collection('news').snapshots(),
       builder: (context, snapshot) {
@@ -67,13 +71,21 @@ class MessagesStream extends StatelessWidget {
           final messages = snapshot.data.documents;
 
           for (var message in messages) {
-            final messageText = message.data['title'];
-            final messageSender = message.data['details'];
-            final messageTime = message.data['imagename'];
-            final messageBubble =
-            MessageBubble(messageText, messageSender,messageTime);
+            final titletext = message.data['title'];
+            final detailtext = message.data['details'];
+            final imagennametext = message.data['imagename'];
+            final List listImage = message.data['pics'];
+            print(listImage);
+            if(listImage != null) {
+              final messageBubble =
+              MessageBubble(titletext, detailtext, imagennametext, listImage);
+              messageBubbles.insert(messageBubbles.length, messageBubble);
+            }
+            else{
+              final messageBubble =MessageBubble(titletext, detailtext, imagennametext,nnnn );
+              messageBubbles.insert(messageBubbles.length, messageBubble);
 
-            messageBubbles.insert(messageBubbles.length, messageBubble);
+            }
 
           }
           return Expanded(
@@ -94,11 +106,12 @@ class MessagesStream extends StatelessWidget {
   }
 }
 class MessageBubble extends StatelessWidget {
-  MessageBubble(this.title, this.details, this.imagename);
+  MessageBubble(this.title, this.details, this.imagename,this.pics);
 
   final String title;
   final String details;
   final String imagename;
+  final List pics;
 
 
   @override
@@ -107,7 +120,7 @@ class MessageBubble extends StatelessWidget {
       padding: const EdgeInsets.all(2.0),
       child: MaterialButton(
         onPressed: (){
-         var detialll = Navigator.push(context,
+         Navigator.push(context,
            MaterialPageRoute(builder: (context){
              return detailscreen();
            })
@@ -115,8 +128,9 @@ class MessageBubble extends StatelessWidget {
           titlee=title;
           imagenamee=imagename;
           detailss=details;
+          picsList=pics;
           
-
+          print('sdaffdfsdfsdfsdf$picsList');
         },
         child: Container(
           height: 100.0,
@@ -155,3 +169,4 @@ class MessageBubble extends StatelessWidget {
     );
   }
 }
+
